@@ -154,6 +154,15 @@ html[data-theme="dark"] a:hover {
 }
 
 /* =============================================================================
+   Lock to dark mode: hide the light/dark/system theme toggle entirely so the
+   site is permanently black and the user cannot change it. The theme itself is
+   forced to "dark" on every load in _includes/head.liquid.
+   ========================================================================== */
+.toggle-container {
+  display: none;
+}
+
+/* =============================================================================
    Always-visible abstract box (replaces al-folio's click-to-toggle "Abs")
    Rendered by the local _layouts/bib.liquid override as .inline-abstract.
    ========================================================================== */
