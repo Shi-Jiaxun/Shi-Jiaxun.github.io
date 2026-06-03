@@ -61,7 +61,12 @@ if (/gem 'al_math',\s*:git =>/.test(gemfile)) {
   failures.push("`Gemfile` must not use git-branch pin for `al_math`; use released gem version.");
 }
 
-for (const forbiddenPath of ["_includes", "_layouts", "_sass", "_scripts", "assets/tailwind", "tailwind.config.js", "assets/webfonts"]) {
+// Note: `_includes`, `_layouts`, and `_sass` are intentionally NOT forbidden here.
+// docs/BOUNDARIES.md explicitly permits site-local overrides of those paths (tracked in
+// .al-folio-overrides.yml). This site keeps a local `_includes/head.liquid` override to add
+// Google Fonts preconnect hints. The paths below remain forbidden because they represent
+// build-pipeline / runtime-artifact ownership that must stay in the gems.
+for (const forbiddenPath of ["_scripts", "assets/tailwind", "tailwind.config.js", "assets/webfonts"]) {
   if (exists(forbiddenPath)) {
     failures.push(`Starter must not own core component path \`${forbiddenPath}\`; move ownership to the corresponding gem.`);
   }

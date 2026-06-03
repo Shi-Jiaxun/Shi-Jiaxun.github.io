@@ -1,0 +1,181 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+@charset "utf-8";
+
+/* Built-in Sass modules you’ll likely use across partials */
+@use "sass:math";
+@use "sass:string";
+
+/* Configure your design tokens BEFORE loading any of your partials.
+   Make sure `_sass/_variables.scss` declares `$max-content-width: 72rem !default;` */
+@use "variables" with (
+  $max-content-width: {{ site.max_width | default:  "930px" }}
+);
+
+/* Your project partials — convert these files to `@use "variables";`
+   (or `@use "variables" as *;`) inside each file and qualify variables if needed. */
+@use "themes";
+@use "layout";
+
+// Core styles organized by usage
+@use "typography";
+@use "navbar";
+@use "footer";
+@use "blog";
+@use "publications";
+@use "components";
+@use "utilities";
+
+// Other specialized styles
+@use "tabs";
+@use "teachings";
+@use "typograms";
+
+/* =============================================================================
+   Site-local font overrides (Shi Jiaxun)
+   -----------------------------------------------------------------------------
+   This file shadows al_folio_core's assets/css/main.scss. It is identical to the
+   gem's version above, plus the rules below. main.css is loaded AFTER tailwind.css
+   in <head>, and these rules are UNLAYERED — so they win over Tailwind's
+   `@layer base` font-family declarations without needing !important.
+
+   Fonts are loaded via Google Fonts (al_folio.google_fonts in _config.yml):
+     - body            -> Inter
+     - headings/navbar -> Space Grotesk
+     - code            -> JetBrains Mono
+   ========================================================================== */
+
+/* Widen the content column. The gem sets `--max-content-width` in an inline
+   <style> earlier in <head> (from site.max_width, 930px); main.css loads later,
+   so this :root override wins without touching _config.yml. */
+:root {
+  --max-content-width: 1240px;
+}
+
+/* Scale the whole page up: everything is rem-based, so raising the root
+   font size grows body, headings, navbar, and spacing together.
+   Tailwind's `@layer base html { font-size: 16px }` is layered; this is not, so it wins. */
+html {
+  font-size: 22px;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navbar-brand,
+.navbar-nav .nav-link,
+.dropdown-item {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+}
+
+code,
+kbd,
+samp,
+tt,
+pre,
+.highlight,
+.highlight pre,
+.highlight code,
+figure.highlight pre {
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+/* =============================================================================
+   Dark mode — "tech" hard-black palette (overrides al_folio_core's _themes.scss)
+   -----------------------------------------------------------------------------
+   These rules are appended AFTER `@use "themes"`, so within main.css they come
+   later than the gem's `html[data-theme="dark"]` block and win. The default theme
+   is forced to dark in _includes/head.liquid (toggle still works).
+   ========================================================================== */
+html[data-theme="dark"] {
+  --global-bg-color: #0a0a0a; // main background (no blue-grey tint)
+  --global-text-color: #ededed; // primary text
+  --global-text-color-light: #a0a0a0; // secondary / muted text
+  --global-theme-color: #ffffff; // links / accents
+  --global-hover-color: #ffffff; // link hover color
+  --global-divider-color: #2a2a2a; // hr / borders
+  --global-code-bg-color: #161616; // code background
+  --global-card-bg-color: #161616; // cards (kept hard-black, not the default blue-grey)
+}
+
+/* Tech-style backdrop (dark mode only): a faint grid + a soft top-center glow,
+   fixed behind the content. Kept very low-contrast so it reads as texture, not noise.
+   Light mode is untouched and stays clean. */
+html[data-theme="dark"] body {
+  background-color: var(--global-bg-color);
+  background-image:
+    radial-gradient(1100px 520px at 50% -8%, rgba(255, 255, 255, 0.05), transparent 70%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    44px 44px,
+    44px 44px;
+  background-attachment: fixed;
+}
+
+/* Code blocks: hard-black bg + subtle border in dark mode */
+html[data-theme="dark"] pre {
+  background-color: var(--global-code-bg-color);
+  border: 1px solid #2a2a2a;
+}
+
+/* Links are white; emphasize the underline on hover ("加深") */
+html[data-theme="dark"] a:hover {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+/* =============================================================================
+   Headings: bold the name + capitalize & bold the "selected publications" header
+   ========================================================================== */
+.post-title {
+  font-weight: 700; // "Shi Jiaxun"
+}
+
+/* Subtitle under the name: italic + muted color so it reads as a caption,
+   visually separated from the body paragraphs below. */
+.post-header .desc {
+  font-style: italic;
+  color: var(--global-text-color-light);
+}
+
+.post article h2 a[href$="/publications/"] {
+  text-transform: capitalize; // selected publications -> Selected Publications
+  font-weight: 700;
+}
+
+/* =============================================================================
+   Always-visible abstract box (replaces al-folio's click-to-toggle "Abs")
+   Rendered by the local _layouts/bib.liquid override as .inline-abstract.
+   ========================================================================== */
+.inline-abstract {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--global-divider-color);
+  border-radius: 6px;
+  background-color: var(--global-code-bg-color);
+  font-size: 0.9rem;
+  text-align: justify;
+}
+
+.inline-abstract .inline-abstract-label {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--global-text-color);
+  margin-bottom: 0.4rem;
+}
+
+.inline-abstract p {
+  margin: 0;
+  line-height: 1.5;
+}
