@@ -19,7 +19,10 @@
       {%- endfor -%}
     {%- endcapture -%}
     {{- authors | strip -}}
-    {%- if entry.month or entry.year %} · {% if entry.month %}{{ entry.month | capitalize }} {% endif %}{{ entry.year }}{%- endif -%}
+    {%- if entry.month or entry.year %}
+      · {% if entry.month %}{{ entry.month | capitalize }} {% endif -%}
+      {{- entry.year }}
+    {%- endif -%}
     {%- if entry.note %} · {{ entry.note }}{%- endif -%}
   </div>
 
@@ -31,13 +34,25 @@
   {%- if has_links -%}
     <div class="links">
       {%- if entry.html -%}
-        <a class="paper-link" href="{% if entry.html contains '://' %}{{ entry.html }}{% else %}{{ entry.html | prepend: '/assets/html/' | relative_url }}{% endif %}">HTML</a>
+        <a
+          class="paper-link"
+          href="{% if entry.html contains '://' %}{{ entry.html }}{% else %}{{ entry.html | prepend: '/assets/html/' | relative_url }}{% endif %}"
+          >HTML</a
+        >
       {%- endif -%}
       {%- if entry.pdf -%}
-        <a class="paper-link" href="{% if entry.pdf contains '://' %}{{ entry.pdf }}{% else %}{{ entry.pdf | prepend: '/assets/pdf/' | relative_url }}{% endif %}">PDF</a>
+        <a
+          class="paper-link"
+          href="{% if entry.pdf contains '://' %}{{ entry.pdf }}{% else %}{{ entry.pdf | prepend: '/assets/pdf/' | relative_url }}{% endif %}"
+          >PDF</a
+        >
       {%- endif -%}
       {%- if entry.supp -%}
-        <a class="paper-link" href="{% if entry.supp contains '://' %}{{ entry.supp }}{% else %}{{ entry.supp | prepend: '/assets/pdf/' | relative_url }}{% endif %}">online appendix</a>
+        <a
+          class="paper-link"
+          href="{% if entry.supp contains '://' %}{{ entry.supp }}{% else %}{{ entry.supp | prepend: '/assets/pdf/' | relative_url }}{% endif %}"
+          >online appendix</a
+        >
       {%- endif -%}
       {%- if entry.doi -%}
         <a class="paper-link" href="https://doi.org/{{ entry.doi }}">DOI</a>
