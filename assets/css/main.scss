@@ -65,6 +65,13 @@ body {
   background-image: none;
 }
 
+/* Default page zoom: render as if the browser were at 150%. Applied to <html>
+   only (zoom compounds across ancestors, so it must live on a single element).
+   `zoom` is now supported in all major browsers, including Firefox 126+. */
+html {
+  zoom: 1.5;
+}
+
 /* --- Typography: one family everywhere (Newsreader, serif). --- */
 body {
   font-family: "Newsreader", Georgia, "Times New Roman", serif;
